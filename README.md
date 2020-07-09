@@ -39,3 +39,4 @@ With zsh (macOS 10.15+):
 PATHTOTCCUTIL="/path/to/tccutil.py"
 echo "alias tccutil=python\ `echo $PATHTOTCCUTIL`" >> .zshrc
 ```
+Then restart Terminal for changes to take effect.
