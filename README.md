@@ -36,6 +36,6 @@ If you want to add it to your path (to be able to type ``tccutil`` without typin
 Type the following commands in a terminal:
 With zsh (macOS 10.15+):
 ```
-$PATHTOTCCUTIL = /path/to/tccutil.py
+PATHTOTCCUTIL="/path/to/tccutil.py"
 echo "alias tccutil=python\ `echo $PATHTOTCCUTIL`" >> .zshrc
 ```
