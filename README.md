@@ -1,5 +1,9 @@
 # tccutil
-A macOS Permissions manager
+### A macOS Permissions manager.
+
+Tested and works on macOS 12.3.1 with SIP turned off. Other macOS versions haven been tested.
+
+This tool modifies the TCC.db file, use it at your own risk.
 
 You can use tccutil.py to manage an app's permissions (Microphone access, Camera access...)
 
