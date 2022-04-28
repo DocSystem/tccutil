@@ -1,111 +1,153 @@
+#!/usr/bin/env python3
+
+import sys
 import os
-from plistlib import *
+import sqlite3
+import plistlib
 import argparse
+import time
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-e', '--enable', help='Enable App Function', action='store_true')
+parser.add_argument('-d', '--disable', help='Disable App Function', action='store_true')
+parser.add_argument('-r', '--remove', help='Remove Record of App Function', action='store_true')
+parser.add_argument('-id', '--bundleid', help='Defines App Bundle ID')
+parser.add_argument('-p', '--apppath', help='Defines App Path to automatically find Bundle ID')
+parser.add_argument('-n', '--appname', help='Defines App Name to automatically find Bundle ID (if app is stored in /Applications/, else, please use --apppath)')
+parser.add_argument('--contacts', help='Change Contacts Access Status for the selected app', action='store_true')
+parser.add_argument('--calendars', help='Change Calendars Access Status for the selected app', action='store_true')
+parser.add_argument('--reminders', help='Change Reminders Access Status for the selected app', action='store_true')
+parser.add_argument('--photos', help='Change Photos Access Status for the selected app', action='store_true')
+parser.add_argument('--camera', help='Change Camera Access Status for the selected app', action='store_true')
+parser.add_argument('--microphone', help='Change Microphone Access Status for the selected app', action='store_true')
+if len(sys.argv) == 1:
+    parser.print_usage()
+    parser.exit()
+args = parser.parse_args()
+tcc_db_path = '~/Library/Application Support/com.apple.TCC/TCC.db'
+tcc_db_path = os.path.abspath(os.path.expanduser(tcc_db_path))
+
 
 def is_root():
     return os.geteuid() == 0
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-e", "--enable", help="Enable App Function", action="store_true")
-parser.add_argument("-d", "--disable", help="Disable App Function", action="store_true")
-parser.add_argument("-id", "--bundleid", help="Defines App Bundle ID")
-parser.add_argument("-p", "--apppath", help="Defines App Path to automatically find Bundle ID")
-parser.add_argument("-n", "--appname", help="Defines App Name to automatically find Bundle ID (if app is stored in /Applications/, else, please use --apppath)")
-parser.add_argument("--contacts", help="Change Contacts Access Status for the selected app", action="store_true")
-parser.add_argument("--calendar", help="Change Calendar Access Status for the selected app", action="store_true")
-parser.add_argument("--reminders", help="Change Reminders Access Status for the selected app", action="store_true")
-parser.add_argument("--photos", help="Change Photos Access Status for the selected app", action="store_true")
-parser.add_argument("--camera", help="Change Camera Status for the selected app", action="store_true")
-parser.add_argument("--micro", help="Change Microphone Status for the selected app", action="store_true")
-#parser.add_argument("--accessibility", help="Change Contacts Access Status for the selected app", action="store_true")
-args = parser.parse_args()
-if args.enable:
-    if args.bundleid:
-        appBundleId = args.bundleid
-    elif args.apppath:
-        appPlist = readPlist(args.apppath + "/Contents/Info.plist")
-        appBundleId = appPlist["CFBundleIdentifier"]
-    elif args.appname:
-        appPlist = readPlist("/Applications/" + args.appname + ".app/Contents/Info.plist")
-        appBundleId = appPlist["CFBundleIdentifier"]
-    else:
-        appPath = input("Glissez l'application ici : ").strip()
-        appPlist = readPlist(appPath + "/Contents/Info.plist")
-        appBundleId = appPlist["CFBundleIdentifier"]
-    
-    if is_root():
-        if args.contacts:
-            os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"INSERT or REPLACE INTO access VALUES('kTCCServiceAddressBook','" + appBundleId + "',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,1551892126);\"")
-            print("Allowed the app to access Contacts!")
-            print(" ")
-        if args.calendar:
-            os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"INSERT or REPLACE INTO access VALUES('kTCCServiceCalendar','" + appBundleId + "',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,1551892126);\"")
-            print("Allowed the app to access Calendar!")
-            print(" ")
-        if args.reminders:
-            os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"INSERT or REPLACE INTO access VALUES('kTCCServiceReminders','" + appBundleId + "',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,1551892126);\"")
-            print("Allowed the app to access Reminders!")
-            print(" ")
-        if args.photos:
-            os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"INSERT or REPLACE INTO access VALUES('kTCCServicePhotos','" + appBundleId + "',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,1551892126);\"")
-            print("Allowed the app to access Photos!")
-            print(" ")
-        if args.camera:
-            os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"INSERT or REPLACE INTO access VALUES('kTCCServiceCamera','" + appBundleId + "',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,1551892126);\"")
-            print("Allowed the app to access Camera!")
-            print(" ")
-        if args.micro:
-            os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"INSERT or REPLACE INTO access VALUES('kTCCServiceMicrophone','" + appBundleId + "',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,1551892126);\"")
-            print("Allowed the app to access Microphone!")
-            print(" ")
-        #if args.accessibility:
-        #    os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"INSERT or REPLACE INTO access VALUES('kTCCServiceAccessibility','" + appBundleId + "',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,1551892126);\"")
-        #    print("Allowed the app to access Accessibility!")
-        #    print(" ")
-    else:
-        print("You are not allowed to do this operation")
-if args.disable:
-    if args.bundleid:
-        appBundleId = args.bundleid
-    elif args.apppath:
-        appPlist = readPlist(args.apppath + "/Contents/Info.plist")
-        appBundleId = appPlist["CFBundleIdentifier"]
-    elif args.appname:
-        appPlist = readPlist("/Applications/" + args.appname + ".app/Contents/Info.plist")
-        appBundleId = appPlist["CFBundleIdentifier"]
-    else:
-        appPath = input("Glissez l'application ici : ").strip()
-        appPlist = readPlist(appPath + "/Contents/Info.plist")
-        appBundleId = appPlist["CFBundleIdentifier"]
 
-    if is_root():
-        if args.contacts:
-            os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"DELETE FROM access WHERE service = 'kTCCServiceAddressBook' AND client = '" + appBundleId + "';\"")
-            print("Removed app access to the Contacts!")
-            print(" ")
-        if args.calendar:
-            os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"DELETE FROM access WHERE service = 'kTCCServiceCalendar' AND client = '" + appBundleId + "';\"")
-            print("Removed app access to the Calendar!")
-            print(" ")
-        if args.reminders:
-            os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"DELETE FROM access WHERE service = 'kTCCServiceReminders' AND client = '" + appBundleId + "';\"")
-            print("Removed app access to the Reminders!")
-            print(" ")
-        if args.photos:
-            os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"DELETE FROM access WHERE service = 'kTCCServicePhotos' AND client = '" + appBundleId + "';\"")
-            print("Removed app access to the Photos!")
-            print(" ")
-        if args.camera:
-            os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"DELETE FROM access WHERE service = 'kTCCServiceCamera' AND client = '" + appBundleId + "';\"")
-            print("Removed app access to the Camera!")
-            print(" ")
-        if args.micro:
-            os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"DELETE FROM access WHERE service = 'kTCCServiceMicrophone' AND client = '" + appBundleId + "';\"")
-            print("Removed app access to the Microphone!")
-            print(" ")
-        #if args.accessibility:
-        #    os.system("sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \"DELETE FROM access WHERE service = 'kTCCServiceAccessibility' AND client = '" + appBundleId + "';\"")
-        #    print("Removed app access to the Accessibility!")
-        #    print(" ")
+def readPlist(path):
+    with open(path, 'rb') as plist_file:
+        return plistlib.load(plist_file)
+
+def modify_tcc_db(service, client, client_type, auth_value):
+    conn = sqlite3.connect(tcc_db_path)
+    cursor = conn.cursor()
+    if auth_value < 0:
+        cursor.execute(
+            'delete from access where service = ? and client = ? and client_type = ?;',
+            (service, client, client_type)
+        )
     else:
-        print("You are not allowed to do this operation")
+        cursor.execute(
+            'insert or replace into access (service, client, client_type, auth_value, auth_reason, ' + \
+            'auth_version, csreq, policy_id, indirect_object_identifier_type, indirect_object_identifier, ' + \
+            'indirect_object_code_identity, flags, last_modified) ' + \
+            'values(?, ?, ?, ?, 0, 1, null, null, 0, \'UNUSED\', null, 0, ?);',
+            (service, client, client_type, auth_value, int(time.time()))
+        )
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+
+if not is_root():
+    print('You are not allowed to do this operation.')
+    exit(1)
+if args.bundleid:
+    appBundleId = args.bundleid
+elif args.apppath:
+    info_plist_path = args.apppath + '/Contents/Info.plist'
+    if os.path.isfile(info_plist_path):
+        print('Found a macOS app.')
+    else:
+        info_plist_path = args.apppath + '/Info.plist'
+        if os.path.isfile(info_plist_path):
+            print('Found an iOS app.')
+    appPlist = readPlist(info_plist_path)
+    appBundleId = appPlist['CFBundleIdentifier']
+elif args.appname:
+    info_plist_path = '/Applications/' + args.appname + '/Contents/Info.plist'
+    if os.path.isfile(info_plist_path):
+        print('Found a macOS app.')
+    else:
+        info_plist_path = '/Applications/' + args.appname + '/Info.plist'
+        if os.path.isfile(info_plist_path):
+            print('Found an iOS app.')
+    appPlist = readPlist(info_plist_path)
+    appBundleId = appPlist['CFBundleIdentifier']
+else:
+    appPath = input('Drag the application here: ').strip()
+    appPath = appPath.replace('\\', '\0').replace('\0\0', '\\').replace('\0', '')
+    info_plist_path = appPath + '/Contents/Info.plist'
+    if os.path.isfile(info_plist_path):
+        print('Found a macOS app.')
+    else:
+        info_plist_path = appPath + '/Info.plist'
+        if os.path.isfile(info_plist_path):
+            print('Found an iOS app.')
+    appPlist = readPlist(info_plist_path)
+    appBundleId = appPlist['CFBundleIdentifier']
+if args.enable:
+    if args.contacts:
+        modify_tcc_db('kTCCServiceAddressBook', appBundleId, 0, 2)
+        print('Allowed the app to access Contacts!')
+    if args.calendars:
+        modify_tcc_db('kTCCServiceCalendar', appBundleId, 0, 2)
+        print('Allowed the app to access Calendars!')
+    if args.reminders:
+        modify_tcc_db('kTCCServiceReminders', appBundleId, 0, 2)
+        print('Allowed the app to access Reminders!')
+    if args.photos:
+        modify_tcc_db('kTCCServicePhotos', appBundleId, 0, 2)
+        print('Allowed the app to access Photos!')
+    if args.camera:
+        modify_tcc_db('kTCCServiceCamera', appBundleId, 0, 2)
+        print('Allowed the app to access Camera!')
+    if args.microphone:
+        modify_tcc_db('kTCCServiceMicrophone', appBundleId, 0, 2)
+        print('Allowed the app to access Microphone!')
+if args.disable:
+    if args.contacts:
+        modify_tcc_db('kTCCServiceAddressBook', appBundleId, 0, 0)
+        print('Disallowed the app to access Contacts!')
+    if args.calendars:
+        modify_tcc_db('kTCCServiceCalendar', appBundleId, 0, 0)
+        print('Disallowed the app to access Calendars!')
+    if args.reminders:
+        modify_tcc_db('kTCCServiceReminders', appBundleId, 0, 0)
+        print('Disallowed the app to access Reminders!')
+    if args.photos:
+        modify_tcc_db('kTCCServicePhotos', appBundleId, 0, 0)
+        print('Disallowed the app to access Photos!')
+    if args.camera:
+        modify_tcc_db('kTCCServiceCamera', appBundleId, 0, 0)
+        print('Disallowed the app to access Camera!')
+    if args.microphone:
+        modify_tcc_db('kTCCServiceMicrophone', appBundleId, 0, 0)
+        print('Disallowed the app to access Microphone!')
+if args.remove:
+    if args.contacts:
+        modify_tcc_db('kTCCServiceAddressBook', appBundleId, 0, -1)
+        print('Removed app access to Contacts!')
+    if args.calendars:
+        modify_tcc_db('kTCCServiceCalendar', appBundleId, 0, -1)
+        print('Removed app access to Calendars!')
+    if args.reminders:
+        modify_tcc_db('kTCCServiceReminders', appBundleId, 0, -1)
+        print('Removed app access to Reminders!')
+    if args.photos:
+        modify_tcc_db('kTCCServicePhotos', appBundleId, 0, -1)
+        print('Removed app access to Photos!')
+    if args.camera:
+        modify_tcc_db('kTCCServiceCamera', appBundleId, 0, -1)
+        print('Removed app access to Camera!')
+    if args.microphone:
+        modify_tcc_db('kTCCServiceMicrophone', appBundleId, 0, -1)
+        print('Removed app access to Microphone!')
