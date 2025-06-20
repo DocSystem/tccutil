@@ -20,6 +20,18 @@ parser.add_argument('--reminders', help='Change Reminders Access Status for the 
 parser.add_argument('--photos', help='Change Photos Access Status for the selected app', action='store_true')
 parser.add_argument('--camera', help='Change Camera Access Status for the selected app', action='store_true')
 parser.add_argument('--microphone', help='Change Microphone Access Status for the selected app', action='store_true')
+parser.add_argument('--location', help='Change Location Services Access Status for the selected app', action='store_true')
+parser.add_argument('--screen-recording', help='Change Screen Recording Access Status for the selected app', action='store_true')
+parser.add_argument('--accessibility', help='Change Accessibility Access Status for the selected app', action='store_true')
+parser.add_argument('--full-disk-access', help='Change Full Disk Access Status for the selected app', action='store_true')
+parser.add_argument('--input-monitoring', help='Change Input Monitoring Access Status for the selected app', action='store_true')
+parser.add_argument('--bluetooth', help='Change Bluetooth Access Status for the selected app', action='store_true')
+parser.add_argument('--local-network', help='Change Local Network Access Status for the selected app', action='store_true')
+parser.add_argument('--media-library', help='Change Media & Apple Music Access Status for the selected app', action='store_true')
+parser.add_argument('--speech-recognition', help='Change Speech Recognition Access Status for the selected app', action='store_true')
+parser.add_argument('--desktop-folder', help='Change Desktop Folder Access Status for the selected app', action='store_true')
+parser.add_argument('--documents-folder', help='Change Documents Folder Access Status for the selected app', action='store_true')
+parser.add_argument('--downloads-folder', help='Change Downloads Folder Access Status for the selected app', action='store_true')
 if len(sys.argv) == 1:
     parser.print_usage()
     parser.exit()
@@ -113,6 +125,42 @@ if args.enable:
     if args.microphone:
         modify_tcc_db('kTCCServiceMicrophone', appBundleId, 0, 2)
         print('Allowed the app to access Microphone!')
+    if args.location:
+        modify_tcc_db('kTCCServiceLocation', appBundleId, 0, 2)
+        print('Allowed the app to access Location Services!')
+    if args.screen_recording:
+        modify_tcc_db('kTCCServiceScreenCapture', appBundleId, 0, 2)
+        print('Allowed the app to access Screen Recording!')
+    if args.accessibility:
+        modify_tcc_db('kTCCServiceAccessibility', appBundleId, 0, 2)
+        print('Allowed the app to access Accessibility!')
+    if args.full_disk_access:
+        modify_tcc_db('kTCCServiceSystemPolicyAllFiles', appBundleId, 0, 2)
+        print('Allowed the app to access Full Disk Access!')
+    if args.input_monitoring:
+        modify_tcc_db('kTCCServiceListenEvent', appBundleId, 0, 2)
+        print('Allowed the app to access Input Monitoring!')
+    if args.bluetooth:
+        modify_tcc_db('kTCCServiceBluetoothAlways', appBundleId, 0, 2)
+        print('Allowed the app to access Bluetooth!')
+    if args.local_network:
+        modify_tcc_db('kTCCServiceLocalNetwork', appBundleId, 0, 2)
+        print('Allowed the app to access Local Network!')
+    if args.media_library:
+        modify_tcc_db('kTCCServiceMediaLibrary', appBundleId, 0, 2)
+        print('Allowed the app to access Media & Apple Music!')
+    if args.speech_recognition:
+        modify_tcc_db('kTCCServiceSpeechRecognition', appBundleId, 0, 2)
+        print('Allowed the app to access Speech Recognition!')
+    if args.desktop_folder:
+        modify_tcc_db('kTCCServiceSystemPolicyDesktopFolder', appBundleId, 0, 2)
+        print('Allowed the app to access Desktop Folder!')
+    if args.documents_folder:
+        modify_tcc_db('kTCCServiceSystemPolicyDocumentsFolder', appBundleId, 0, 2)
+        print('Allowed the app to access Documents Folder!')
+    if args.downloads_folder:
+        modify_tcc_db('kTCCServiceSystemPolicyDownloadsFolder', appBundleId, 0, 2)
+        print('Allowed the app to access Downloads Folder!')
 if args.disable:
     if args.contacts:
         modify_tcc_db('kTCCServiceAddressBook', appBundleId, 0, 0)
@@ -132,6 +180,42 @@ if args.disable:
     if args.microphone:
         modify_tcc_db('kTCCServiceMicrophone', appBundleId, 0, 0)
         print('Disallowed the app to access Microphone!')
+    if args.location:
+        modify_tcc_db('kTCCServiceLocation', appBundleId, 0, 0)
+        print('Disallowed the app to access Location Services!')
+    if args.screen_recording:
+        modify_tcc_db('kTCCServiceScreenCapture', appBundleId, 0, 0)
+        print('Disallowed the app to access Screen Recording!')
+    if args.accessibility:
+        modify_tcc_db('kTCCServiceAccessibility', appBundleId, 0, 0)
+        print('Disallowed the app to access Accessibility!')
+    if args.full_disk_access:
+        modify_tcc_db('kTCCServiceSystemPolicyAllFiles', appBundleId, 0, 0)
+        print('Disallowed the app to access Full Disk Access!')
+    if args.input_monitoring:
+        modify_tcc_db('kTCCServiceListenEvent', appBundleId, 0, 0)
+        print('Disallowed the app to access Input Monitoring!')
+    if args.bluetooth:
+        modify_tcc_db('kTCCServiceBluetoothAlways', appBundleId, 0, 0)
+        print('Disallowed the app to access Bluetooth!')
+    if args.local_network:
+        modify_tcc_db('kTCCServiceLocalNetwork', appBundleId, 0, 0)
+        print('Disallowed the app to access Local Network!')
+    if args.media_library:
+        modify_tcc_db('kTCCServiceMediaLibrary', appBundleId, 0, 0)
+        print('Disallowed the app to access Media & Apple Music!')
+    if args.speech_recognition:
+        modify_tcc_db('kTCCServiceSpeechRecognition', appBundleId, 0, 0)
+        print('Disallowed the app to access Speech Recognition!')
+    if args.desktop_folder:
+        modify_tcc_db('kTCCServiceSystemPolicyDesktopFolder', appBundleId, 0, 0)
+        print('Disallowed the app to access Desktop Folder!')
+    if args.documents_folder:
+        modify_tcc_db('kTCCServiceSystemPolicyDocumentsFolder', appBundleId, 0, 0)
+        print('Disallowed the app to access Documents Folder!')
+    if args.downloads_folder:
+        modify_tcc_db('kTCCServiceSystemPolicyDownloadsFolder', appBundleId, 0, 0)
+        print('Disallowed the app to access Downloads Folder!')
 if args.remove:
     if args.contacts:
         modify_tcc_db('kTCCServiceAddressBook', appBundleId, 0, -1)
@@ -151,3 +235,39 @@ if args.remove:
     if args.microphone:
         modify_tcc_db('kTCCServiceMicrophone', appBundleId, 0, -1)
         print('Removed app access to Microphone!')
+    if args.location:
+        modify_tcc_db('kTCCServiceLocation', appBundleId, 0, -1)
+        print('Removed app access to Location Services!')
+    if args.screen_recording:
+        modify_tcc_db('kTCCServiceScreenCapture', appBundleId, 0, -1)
+        print('Removed app access to Screen Recording!')
+    if args.accessibility:
+        modify_tcc_db('kTCCServiceAccessibility', appBundleId, 0, -1)
+        print('Removed app access to Accessibility!')
+    if args.full_disk_access:
+        modify_tcc_db('kTCCServiceSystemPolicyAllFiles', appBundleId, 0, -1)
+        print('Removed app access to Full Disk Access!')
+    if args.input_monitoring:
+        modify_tcc_db('kTCCServiceListenEvent', appBundleId, 0, -1)
+        print('Removed app access to Input Monitoring!')
+    if args.bluetooth:
+        modify_tcc_db('kTCCServiceBluetoothAlways', appBundleId, 0, -1)
+        print('Removed app access to Bluetooth!')
+    if args.local_network:
+        modify_tcc_db('kTCCServiceLocalNetwork', appBundleId, 0, -1)
+        print('Removed app access to Local Network!')
+    if args.media_library:
+        modify_tcc_db('kTCCServiceMediaLibrary', appBundleId, 0, -1)
+        print('Removed app access to Media & Apple Music!')
+    if args.speech_recognition:
+        modify_tcc_db('kTCCServiceSpeechRecognition', appBundleId, 0, -1)
+        print('Removed app access to Speech Recognition!')
+    if args.desktop_folder:
+        modify_tcc_db('kTCCServiceSystemPolicyDesktopFolder', appBundleId, 0, -1)
+        print('Removed app access to Desktop Folder!')
+    if args.documents_folder:
+        modify_tcc_db('kTCCServiceSystemPolicyDocumentsFolder', appBundleId, 0, -1)
+        print('Removed app access to Documents Folder!')
+    if args.downloads_folder:
+        modify_tcc_db('kTCCServiceSystemPolicyDownloadsFolder', appBundleId, 0, -1)
+        print('Removed app access to Downloads Folder!')
